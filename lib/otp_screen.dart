@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home_screen.dart';
+import 'role_selection_screen.dart';
 
 class OTPScreen extends StatefulWidget {
   final String verificationId;
@@ -21,24 +20,12 @@ class _OTPScreenState extends State<OTPScreen> {
       smsCode: otpController.text.trim(),
     );
 
-    final userCred = await FirebaseAuth.instance.signInWithCredential(
-      credential,
-    );
-
-    final user = userCred.user;
-
-    // Save user in Firestore
-    await FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
-      "uid": user.uid,
-      "phone": user.phoneNumber,
-      "role": "rider",
-      "createdAt": FieldValue.serverTimestamp(),
-    });
+    await FirebaseAuth.instance.signInWithCredential(credential);
 
     if (mounted) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const RoleSelectionScreen()),
         (route) => false,
       );
     }
